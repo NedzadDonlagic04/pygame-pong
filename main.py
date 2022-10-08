@@ -5,6 +5,7 @@ from classes import *
 class Game:
     MAIN_MENU = 0
     GAME_ONGOING = 1
+    PAUSE = 2
 
     def __init__(self, width, height, title):
         pygame.init()
@@ -21,14 +22,17 @@ class Game:
         icon = pygame.image.load('./img/pong-icon.png').convert_alpha()
         pygame.display.set_icon(icon)
         
-        pongText = Text(150, 'Pong', 'White', (width / 2, 100))
-        startText = Text(80, 'Play', 'Gray', (width / 2, pongText.rect.bottom + 70), True)
-        exitText = Text(80, 'Exit', 'Gray', (width / 2, startText.rect.bottom + 50), True)
+        self.pongText = Text(150, 'Pong', 'White', (width / 2, 100))
+        self.startText = Text(80, 'Play', 'Gray', (width / 2, self.pongText.rect.bottom + 70), True)
+        self.exitText = Text(80, 'Exit', 'Gray', (width / 2, self.startText.rect.bottom + 50), True)
 
-        self.startScreenText = pygame.sprite.Group(pongText, startText, exitText)
+        self.pauseText = Text(150, 'Pause', 'White', (width / 2, 100))
+        self.continueText = Text(80, 'Continue', 'Gray', (width / 2, self.pauseText.rect.bottom + 50), True)
+        self.mainMenuText = Text(80, 'Main Menu', 'Gray', (width / 2, self.continueText.rect.bottom + 70), True)
 
         self.mouse = MouseEvent()
 
+        self.onScreenText = pygame.sprite.Group(self.pongText, self.startText, self.exitText)
         self.state = self.MAIN_MENU
 
     def closeGame(self):
@@ -43,15 +47,29 @@ class Game:
                 elif self.mouse.text == 'Play':
                     self.mouse.text = None
                     self.state = self.GAME_ONGOING
+                elif event.type == pygame.KEYDOWN:
+                    if self.state == self.GAME_ONGOING and event.key == pygame.K_ESCAPE:
+                        self.state = self.PAUSE
+                        self.onScreenText = pygame.sprite.Group(self.pauseText, self.continueText, self.mainMenuText)
+                elif self.mouse.text == 'Main Menu':
+                    self.state = self.MAIN_MENU
+                    self.onScreenText = pygame.sprite.Group(self.pongText, self.startText, self.exitText)
+                elif self.mouse.text == 'Continue':
+                    self.state = self.GAME_ONGOING
+                    self.mouse.text = None
 
             pygame.draw.rect(self.screen, 'Black', (0, 0, self.WIDTH, self.HEIGHT))
 
             if self.state == self.MAIN_MENU:
-                self.startScreenText.update()
-                self.startScreenText.draw(self.screen)
-                self.mouse.detectClick(self.startScreenText)
+                self.onScreenText.update()
+                self.onScreenText.draw(self.screen)
+                self.mouse.detectClick(self.onScreenText)
             elif self.state == self.GAME_ONGOING:
                 print('Game ongoing')
+            elif self.state == self.PAUSE:
+                self.onScreenText.update()
+                self.onScreenText.draw(self.screen)
+                self.mouse.detectClick(self.onScreenText)
 
             pygame.display.update()
             self.clock.tick()
