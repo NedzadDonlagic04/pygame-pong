@@ -18,7 +18,7 @@ class Text(pygame.sprite.Sprite):
         self.hoverText = font.render(text, False, 'White')
 
         self.image = self.normalText
-        self.rect = self.image.get_rect( center = pos)
+        self.rect = self.image.get_rect( center = pos )
 
         self.hoverEffect = hoverEffect
 
