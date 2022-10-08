@@ -3,6 +3,9 @@ from sys import exit
 from classes import *
 
 class Game:
+    MAIN_MENU = 0
+    GAME_ONGOING = 1
+
     def __init__(self, width, height, title):
         pygame.init()
 
@@ -24,6 +27,10 @@ class Game:
 
         self.startScreenText = pygame.sprite.Group(pongText, startText, exitText)
 
+        self.mouse = MouseEvent()
+
+        self.state = self.MAIN_MENU
+
     def closeGame(self):
         pygame.quit()
         exit()
@@ -31,13 +38,20 @@ class Game:
     def run(self):
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or self.mouse.text == 'Exit':
                     self.closeGame()
+                elif self.mouse.text == 'Play':
+                    self.mouse.text = None
+                    self.state = self.GAME_ONGOING
 
             pygame.draw.rect(self.screen, 'Black', (0, 0, self.WIDTH, self.HEIGHT))
 
-            self.startScreenText.update()
-            self.startScreenText.draw(self.screen)
+            if self.state == self.MAIN_MENU:
+                self.startScreenText.update()
+                self.startScreenText.draw(self.screen)
+                self.mouse.detectClick(self.startScreenText)
+            elif self.state == self.GAME_ONGOING:
+                print('Game ongoing')
 
             pygame.display.update()
             self.clock.tick()
