@@ -14,6 +14,8 @@ class Text(pygame.sprite.Sprite):
 
         font = pygame.font.Font('./fonts/Pixeltype.ttf', font_size)
         
+        self.text = text
+
         self.normalText = font.render(text, False, color)
         self.hoverText = font.render(text, False, 'White')
 
@@ -25,6 +27,9 @@ class Text(pygame.sprite.Sprite):
         self.hoverSound = pygame.mixer.Sound('./audio/mouseHover.wav')
         self.soundPlayer = False
     
+    def getText(self):
+        return self.text
+
     def update(self):
         if self.hoverEffect:
             mouseX, mouseY = pygame.mouse.get_pos()
@@ -34,6 +39,22 @@ class Text(pygame.sprite.Sprite):
                 if not self.soundPlayer:
                     self.hoverSound.play()
                     self.soundPlayer = True
+                if pygame.mouse.get_pressed()[0]:
+                    return self.text
+
             else:
                 self.image = self.normalText
                 self.soundPlayer = False
+
+class MouseEvent:
+    def __init__(self):
+        self.sprites = None
+        self.text = None
+    
+    def detectClick(self, sprites):
+        pos = pygame.mouse.get_pos()
+        if pygame.mouse.get_pressed()[0]:
+            for sprite in sprites.sprites():
+                if sprite.rect.collidepoint(pos):
+                    self.text = sprite.getText()
+                    return
