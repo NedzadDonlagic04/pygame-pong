@@ -1,3 +1,4 @@
+from curses import KEY_DOWN
 import pygame
 from random import randrange, choice
 
@@ -140,3 +141,45 @@ class Scores:
 
         if self.getScores()[0] == 3 or self.getScores()[1] == 3:
             return state
+    
+class Player(pygame.sprite.Sprite):
+    def __init__(self, width, height, player):
+        super().__init__()
+
+        self.image = pygame.image.load('./img/player.png').convert_alpha()
+        
+        if player == 1:
+            self.rect = self.image.get_rect( center = (width/8, height/2) )
+        else:
+            self.rect = self.image.get_rect( center = (7*width/8, height/2) )
+
+        self.player = player
+        self.WIDTH = width
+        self.HEIGHT = height
+
+        self.speed = 3
+    
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if self.player == 1:
+            if keys[pygame.K_w]:
+                if self.rect.top < 0:
+                    self.rect.top = 0
+                else:
+                    self.rect.top -= self.speed
+            elif keys[pygame.K_s]:
+                if self.rect.bottom > self.HEIGHT:
+                    self.rect.bottom = self.HEIGHT
+                else:
+                    self.rect.bottom += self.speed
+        else:
+            if keys[pygame.K_UP]:
+                if self.rect.top < 0:
+                    self.rect.top = 0
+                else:
+                    self.rect.top -= self.speed
+            elif keys[pygame.K_DOWN]:
+                if self.rect.bottom > self.HEIGHT:
+                    self.rect.bottom = self.HEIGHT
+                else:
+                    self.rect.bottom += self.speed
