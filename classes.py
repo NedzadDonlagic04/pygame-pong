@@ -71,7 +71,7 @@ class Ball(pygame.sprite.Sprite):
         self.SCREEN_WIDTH = width
         self.SCREEN_HEIGHT = height
 
-        self.speed = 2
+        self.speed = 3
 
         self.directions = [-self.speed , self.speed]
 
@@ -166,7 +166,7 @@ class Player(pygame.sprite.Sprite):
         self.WIDTH = width
         self.HEIGHT = height
 
-        self.speed = 3
+        self.speed = 4
     
     def update(self):
         keys = pygame.key.get_pressed()
