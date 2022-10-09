@@ -87,6 +87,7 @@ class Game:
                     self.state = self.GAME_OVER
                 else:
                     self.ball.update(self.scores)
+                    self.ball.checkCollision(self.players)
                     self.ball.draw(self.screen)
                     self.players.update()
                     self.players.draw(self.screen)
