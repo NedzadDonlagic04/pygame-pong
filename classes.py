@@ -86,9 +86,13 @@ class Ball(pygame.sprite.Sprite):
         if self.rect.top == 0 or self.rect.bottom == self.SCREEN_HEIGHT:
             self.y = -self.y
         if self.rect.left == 0 or self.rect.right == self.SCREEN_WIDTH:
-            self.x = -self.x
+            self.setSpot()
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
-
+class Border(pygame.sprite.Sprite):
+    def __init__(self, width, height):
+        super().__init__()
+        self.image = pygame.image.load('./img/border.png').convert_alpha()
+        self.rect = self.image.get_rect( center = (width/2, height/2)) 
 
