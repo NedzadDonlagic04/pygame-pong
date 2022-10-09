@@ -42,6 +42,8 @@ class Game:
         self.border = pygame.sprite.GroupSingle( Border(width, height) )
         self.scores = Scores(width, 80)
 
+        self.players = None
+
         self.onScreenText = pygame.sprite.Group(self.pongText, self.startText, self.exitText)
         self.state = self.MAIN_MENU
 
@@ -59,6 +61,7 @@ class Game:
                     self.state = self.GAME_ONGOING
                     self.ball.setSpot()
                     self.scores.scoreReset()
+                    self.players = pygame.sprite.Group( Player(self.WIDTH, self.HEIGHT, 1), Player(self.WIDTH, self.HEIGHT, 2))
                 elif event.type == pygame.KEYDOWN:
                     if self.state == self.GAME_ONGOING and event.key == pygame.K_ESCAPE:
                         self.state = self.PAUSE
@@ -85,6 +88,8 @@ class Game:
                 else:
                     self.ball.update(self.scores)
                     self.ball.draw(self.screen)
+                    self.players.update()
+                    self.players.draw(self.screen)
             else:
                 self.onScreenText.update()
                 self.onScreenText.draw(self.screen)
