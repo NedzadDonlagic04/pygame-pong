@@ -33,6 +33,7 @@ class Game:
         self.mouse = MouseEvent()
 
         self.ball = Ball(width, height)
+        self.border = pygame.sprite.GroupSingle( Border(width, height) )
 
         self.onScreenText = pygame.sprite.Group(self.pongText, self.startText, self.exitText)
         self.state = self.MAIN_MENU
@@ -68,6 +69,8 @@ class Game:
                 self.onScreenText.draw(self.screen)
                 self.mouse.detectClick(self.onScreenText)
             elif self.state == self.GAME_ONGOING:
+                self.border.draw(self.screen)
+                
                 self.ball.update()
                 self.ball.draw(self.screen)
             elif self.state == self.PAUSE:
