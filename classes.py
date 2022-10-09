@@ -71,7 +71,9 @@ class Ball(pygame.sprite.Sprite):
         self.SCREEN_WIDTH = width
         self.SCREEN_HEIGHT = height
 
-        self.directions = [-1 , 1]
+        self.speed = 2
+
+        self.directions = [-self.speed , self.speed]
 
     def setSpot(self, player=0):
         y = randrange(8, self.SCREEN_HEIGHT - 8, 1)
@@ -80,20 +82,27 @@ class Ball(pygame.sprite.Sprite):
         if player == 0:
             self.x = choice(self.directions)
         elif player == 1:
-            self.x = -1
+            self.x = -self.speed
         else:
-            self.x = 1
+            self.x = self.speed
 
         self.y = choice(self.directions)
+    
+    def checkCollision(self, players):
+        for player in players:
+            check = self.rect.colliderect(player.rect)
+            if check:
+                self.x = -self.x
+                break
 
     def update(self, scores):
         self.rect.top += self.y
         self.rect.left += self.x
 
-        if self.rect.top == 0 or self.rect.bottom == self.SCREEN_HEIGHT:
+        if self.rect.top < 0 or self.rect.bottom > self.SCREEN_HEIGHT:
             self.y = -self.y
-        if self.rect.left == 0 or self.rect.right == self.SCREEN_WIDTH:
-            if self.rect.left == 0:
+        if self.rect.left < 0 or self.rect.right > self.SCREEN_WIDTH:
+            if self.rect.left < 0:
                 scores.scoreUpdate(2)
                 self.setSpot(2)
             else:
