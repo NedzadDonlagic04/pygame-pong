@@ -72,21 +72,32 @@ class Ball(pygame.sprite.Sprite):
 
         self.directions = [-1 , 1]
 
-    def setSpot(self):
+    def setSpot(self, player=0):
         y = randrange(8, self.SCREEN_HEIGHT - 8, 1)
         self.rect = self.image.get_rect( center = (self.SCREEN_WIDTH/2, y))
         
-        self.x = choice(self.directions)
+        if player == 0:
+            self.x = choice(self.directions)
+        elif player == 1:
+            self.x = -1
+        else:
+            self.x = 1
+
         self.y = choice(self.directions)
 
-    def update(self):
+    def update(self, scores):
         self.rect.top += self.y
         self.rect.left += self.x
 
         if self.rect.top == 0 or self.rect.bottom == self.SCREEN_HEIGHT:
             self.y = -self.y
         if self.rect.left == 0 or self.rect.right == self.SCREEN_WIDTH:
-            self.setSpot()
+            if self.rect.left == 0:
+                scores.scoreUpdate(2)
+                self.setSpot(2)
+            else:
+                scores.scoreUpdate(1)
+                self.setSpot(1)
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -96,3 +107,36 @@ class Border(pygame.sprite.Sprite):
         self.image = pygame.image.load('./img/border.png').convert_alpha()
         self.rect = self.image.get_rect( center = (width/2, height/2)) 
 
+class Scores:
+    def __init__(self, width, font_size):
+        self.font = pygame.font.Font('./fonts/Pixeltype.ttf', font_size)
+
+        self.scoreReset()
+
+        self.rect1 = self.image1.get_rect( center = (width/4, 50))
+        self.rect2 = self.image2.get_rect( center = (3*width/4, 50))
+
+    def scoreReset(self):
+        self.score1 = 0
+        self.score2 = 0
+
+        self.image1 = self.font.render(str(self.score1), False, 'White')
+        self.image2 = self.font.render(str(self.score2), False, 'White')
+
+    def getScores(self):
+        return (self.score1, self.score2)
+
+    def scoreUpdate(self, side):
+        if side == 1:
+            self.score1 += 1
+            self.image1 = self.font.render(str(self.score1), False, 'White')
+        else:
+            self.score2 += 1
+            self.image2 = self.font.render(str(self.score2), False, 'White')
+
+    def draw(self, screen, state):
+        screen.blit(self.image1, self.rect1)
+        screen.blit(self.image2, self.rect2)
+
+        if self.getScores()[0] == 3 or self.getScores()[1] == 3:
+            return state
