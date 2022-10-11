@@ -1,4 +1,3 @@
-from curses import KEY_DOWN
 import pygame
 from random import randrange, choice
 
